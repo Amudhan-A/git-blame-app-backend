@@ -243,5 +243,31 @@ def get_contributors(repo: str):
 
     return {"contributors": contributors}
 
+@router.get("/commit-frequency")
+def get_commit_frequency(repo: str):
+    from collections import defaultdict
+    import datetime
+
+    functions = get_repo_functions(repo)
+    weekly = defaultdict(int)
+
+    for fn in functions:
+        for commit in fn.get("commits", []):
+            try:
+                date = datetime.datetime.fromisoformat(commit["date"])
+                week = date.strftime("%b %d")
+                weekly[week] += 1
+            except:
+                continue
+
+    sorted_weeks = sorted(weekly.items())[-8:]  # last 8 weeks
+
+    return {
+        "commitFrequency": [
+            {"date": k, "commits": v}
+            for k, v in sorted_weeks
+        ]
+    }
+
 # include webhook routes
 router.include_router(webhook_router)
