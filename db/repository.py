@@ -30,14 +30,14 @@ def get_repo_functions(repo_name: str):
     results = functions_collection.find(
         {"repo": repo_name},
         {
-            "_id": 0,  # remove Mongo ObjectId
+            "_id": 0,
             "filepath": 1,
-            "function_name": 1
+            "function_name": 1,
+            "ownership": 1
         }
     )
 
     return list(results)
-
 
 
 def get_function(repo, filepath, function_name):

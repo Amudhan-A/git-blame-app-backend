@@ -171,7 +171,11 @@ def get_repo_map(repo: str):
 
     filtered_edges = [
         e for e in edges
-        if e["caller"] in functions or e["callee"] in functions
+        if (
+            e["caller"] in functions
+            or e["callee"] in functions
+            or e["callee"][0].isupper()   # likely a class
+        )
     ]
 
     nodes = set()
@@ -180,11 +184,38 @@ def get_repo_map(repo: str):
         nodes.add(edge["caller"])
         nodes.add(edge["callee"])
 
+    
+
     return {
         "nodes": list(nodes),
         "edges": filtered_edges
     }
 
+
+@router.get("/contributors")
+def get_contributors(repo: str):
+
+    functions = get_repo_functions(repo)
+
+    stats = {}
+
+    for f in functions:
+        owner = f.get("ownership", {}).get("primary_owner")
+        if not owner:
+            continue
+
+        if owner not in stats:
+            stats[owner] = {
+                "name": owner,
+                "commits": 0,
+                "functions": 0
+            }
+
+        stats[owner]["functions"] += 1
+
+    contributors = list(stats.values())
+
+    return {"contributors": contributors}
 
 # include webhook routes
 router.include_router(webhook_router)
