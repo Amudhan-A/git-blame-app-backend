@@ -17,19 +17,24 @@ router = APIRouter()
 
 
 @router.post("/analyze")
-def analyze_function(repo_path: str, filepath: str, function_name: str):
+def analyze_function(
+    repo_path: str,
+    filepath: str,
+    function_name: str,
+    owner: str,
+    repo_name: str
+):
 
-    # Step 1 — Mine Git history
     git_context = mine_git_history(
         repo_path,
         filepath,
-        function_name
+        function_name,
+        owner,
+        repo_name
     )
 
-    # Step 2 — Run analyzer
     analysis, ownership = analyze(git_context)
 
-    # Step 3 — Store in MongoDB
     data = {
         "repo": git_context.repo,
         "filepath": git_context.filepath,
@@ -58,7 +63,6 @@ def analyze_function(repo_path: str, filepath: str, function_name: str):
         "analysis": analysis,
         "ownership": ownership
     }
-
 
 @router.post("/explain-function")
 def explain(req: ExplainRequest):
