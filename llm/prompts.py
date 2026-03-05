@@ -57,10 +57,19 @@ PULL_REQUESTS:
 
 Task:
 Summarize the historical and architectural intent of the function.
+When generating the explanation:
+
+1. Inspect how the function is used by other functions (CALLERS).
+2. Inspect what internal operations it performs (CALLEES).
+3. Examine commit messages and diffs for design motivations.
+4. Look for references to architectural changes or refactors.
+5. Use ownership data to infer the likely maintainer of this logic.
+
+Then synthesize a concise explanation of the function's role in the system.
 
 Return JSON with:
 
-* why_it_exists: short explanation of the function's purpose inferred from usage and history
+* why_it_exists:  explanation of the function's purpose inferred from usage and history
 * key_decisions: important implementation or design changes visible in commits or PRs
 * linked_issues: referenced issue numbers, PR IDs, or tickets found in commit/PR text
 
