@@ -37,7 +37,7 @@ def analyze(git_context: GitContext) -> tuple[AnalysisResult, OwnershipResult]:
             repo_graph
         )
     )
-    print("Blast radius result:", blast_radius)
+
     # -------- OWNERSHIP --------
     ownership = compute_ownership(
         git_context.commits
